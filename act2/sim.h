@@ -6,13 +6,16 @@
 
 typedef struct {
     int marco_fisico; 
-    int valid;       
-    int dirty;        // 1 modificado, 0 sino
+    int valid;       // 1 válido, 0 inválido
+    int dirty;       // 1 modificado
+    int referencia;   // 1 referenciado recientemente
 } PageTableEntry;
 
 typedef struct {
-    int pagina_virtual; // Qué página virtual está almacenada aquí
-    int ocupado;        // 1 si el marco está ocupado, 0 si está libre
+    int pagina_virtual; 
 } Marco;
+
+void inicializar_estructuras(PageTableEntry **tabla_paginas, Marco **memoria_fisica, int n_marcos, int num_paginas_virtuales);
+
 
 #endif
