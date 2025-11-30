@@ -1,15 +1,16 @@
 #include "sim.h"
 #include <stdio.h>
 #include <stdlib.h>
-#include <descomponer.h>
-#include <obtener_direccion_fisica.h>
+#include "descomponer.h"
+#include "obtener_direccion_fisica.h"
+#include <string.h>
 
 
 void simulador(const char *archivo_traza, int n_marcos, int tam_marco, int verbose){
     FILE *fp = fopen(archivo_traza, "r");
     if (fp == NULL){
         fprintf(stderr, "Error. No se puede abrir el archivo de traza '%s'\n", archivo_traza);
-        __EXIT(1);
+        exit(1);
     }
 
     int page_bits = calcular_page_bits(tam_marco);
@@ -215,7 +216,7 @@ int main(int argc, char *argv[]){
         archivo_traza = argv[3];
     } else if (argc == 5)
     {
-        if (strncmp(argv[3], "--verbose") == 0)
+        if (strncmp(argv[3], "--verbose", 9) == 0)
         {
             verbose = 1;
             archivo_traza = argv[4];
@@ -227,7 +228,7 @@ int main(int argc, char *argv[]){
         fprintf(stderr, "Error. Demasiados argumentos");
     }
 
-    ejecutar_simulador(archivo_traza, n_marcos, tam_marco, verbose);
+    simulador(archivo_traza, n_marcos, tam_marco, verbose);
 
 
 }
