@@ -68,7 +68,7 @@ void simulador(const char *archivo_traza, int n_marcos, int tam_marco, int verbo
         }    
     }
     
-    printf("\n===RESULTADOS===");
+    printf("\n===RESULTADOS===\n");
     printf("Total de accesos: %d \n", total_accesos);
     printf("Fallos de página: %d \n", total_fallos);
     printf("Tasa de fallos: %.2f%%\n", (double)total_fallos / total_accesos * 100);
