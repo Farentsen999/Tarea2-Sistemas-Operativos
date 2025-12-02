@@ -14,8 +14,19 @@ void simulador(const char *archivo_traza, int n_marcos, int tam_marco, int verbo
     }
 
     int page_bits = calcular_page_bits(tam_marco);
-
-    int num_paginas_virtuales = (1 << (32 - page_bits)); // Asumimos direcciones de 32 bits
+    
+    // Limitar número de páginas para evitar uso excesivo de memoria
+    // Calculamos cuántas páginas resultarían y limitamos si es necesario
+    int bits_para_paginas = 32 - page_bits;
+    if (bits_para_paginas > 20) {
+        bits_para_paginas = 20;  // Máximo de 2^20 = 1M páginas
+        if (verbose) {
+            printf("ADVERTENCIA: Limitando tabla de páginas a 2^%d entradas para evitar uso excesivo de memoria\n", 
+                   bits_para_paginas);
+        }
+    }
+    
+    int num_paginas_virtuales = (1 << bits_para_paginas);
 
     PageTableEntry *tabla_paginas;
     Marco *memoria_fisica;
@@ -51,7 +62,7 @@ void simulador(const char *archivo_traza, int n_marcos, int tam_marco, int verbo
         }
 
         unsigned int df = traducir_direccion(dv, tabla_paginas, memoria_fisica, n_marcos,
-                                             page_bits, &puntero_reloj, &fallo, verbose);
+                                             page_bits, &puntero_reloj, &fallo, verbose, num_paginas_virtuales);
         
         if (fallo)
         {
@@ -107,11 +118,19 @@ int algoritmo_reloj(Marco *memoria_fisica, int n_marcos, int *puntero_reloj){
 }
 
 unsigned int traducir_direccion(unsigned int dv, PageTableEntry *tabla_paginas, Marco *memoria_fisica,
-                                int n_marcos, int page_bits, int *puntero_reloj, int *fallo, int verbose)
+                                int n_marcos, int page_bits, int *puntero_reloj, int *fallo, int verbose, int num_paginas_virtuales)
     {
     unsigned int nvp, offset;
 
     descomponer(dv, &nvp ,&offset, page_bits);
+
+    // Verificar que nvp esté dentro del rango de la tabla de páginas
+    if (nvp >= num_paginas_virtuales) {
+        fprintf(stderr, "ERROR: Número de página virtual %u fuera de rango (máximo: %d)\n", 
+                nvp, num_paginas_virtuales - 1);
+        *fallo = 1;
+        return 0;
+    }
 
     *fallo = 0;
     int marco;

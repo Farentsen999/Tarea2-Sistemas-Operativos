@@ -20,7 +20,7 @@ void inicializar_estructuras(PageTableEntry **tabla_paginas, Marco **memoria_fis
 void simulador(const char *archivo_traza, int n_marcos, int tam_marco, int verbose);
 int calcular_page_bits(int tam_marco);
 unsigned int parsear_direccion(const char *str);
-unsigned int traducir_direccion(unsigned int dv, PageTableEntry *tabla_paginas, Marco *memoria_fisica, int n_marcos, int page_bits, int *puntero_reloj, int *fallo, int verbose);
+unsigned int traducir_direccion(unsigned int dv, PageTableEntry *tabla_paginas, Marco *memoria_fisica, int n_marcos, int page_bits, int *puntero_reloj, int *fallo, int verbose, int num_paginas_virtuales);
 int buscar_marco_libre(Marco *memoria_fisica, int n_marcos);
 int algoritmo_reloj(Marco *memoria_fisica, int n_marcos, int *puntero_reloj);
 
